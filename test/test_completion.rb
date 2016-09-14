@@ -424,11 +424,11 @@ EOC
   end
 
   def test_percent__Regexp
-    assert_equal(["kcode"], doit('%r!foo!.kcod',1))
-    assert_equal(["kcode"], doit('%r{foo}.kcod',1))
-    assert_equal(["kcode"], doit('%r!(!.kcod',1))
-    assert_equal(["kcode"], doit('%r{(}.kcod',1))
-    assert_equal(["kcode"], doit('%r{f(o)o}.kcod',1))
+    assert_equal(["named_captures"], doit('%r!foo!.named_captur',1))
+    assert_equal(["named_captures"], doit('%r{foo}.named_captur',1))
+    assert_equal(["named_captures"], doit('%r!(!.named_captur',1))
+    assert_equal(["named_captures"], doit('%r{(}.named_captur',1))
+    assert_equal(["named_captures"], doit('%r{f(o)o}.named_captur',1))
   end
 
   def test_percent__Symbol
