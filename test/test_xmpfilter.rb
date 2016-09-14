@@ -3,7 +3,7 @@ require 'test/unit'
 $: << ".." << "../lib"
 require "rcodetools/xmpfilter"
 require 'rubygems'
-require 'mocha'
+require 'mocha/test_unit'
 
 class TestXMPFilter < Test::Unit::TestCase
   include Rcodetools
