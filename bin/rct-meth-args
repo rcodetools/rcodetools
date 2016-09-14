@@ -6,6 +6,7 @@
 # Use and distribution subject to the same conditions as Ruby.
 
 require 'rcodetools/options'
+require 'continuation'
 include Rcodetools
 $VERBOSE = nil
 $__method_args_off = true
