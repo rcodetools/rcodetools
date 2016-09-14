@@ -16,7 +16,6 @@ RCT_VERSION  = XMPFilter::VERSION
 
 desc "Run the unit tests in pure-Ruby mode ."
 Rake::TestTask.new(:test) do |t|
-  t.libs << "ext/rcovrt"
   t.test_files = FileList['test/test*.rb']
   t.verbose = true
 end
