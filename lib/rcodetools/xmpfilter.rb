@@ -15,8 +15,6 @@ require 'tmpdir'
 module Rcodetools
 
 class XMPFilter
-  VERSION = "0.8.5"
-
   MARKER = "!XMP#{Time.new.to_i}_#{Process.pid}_#{rand(1000000)}!"
   XMP_RE = Regexp.new("^" + Regexp.escape(MARKER) + '\[([0-9]+)\] (=>|~>|==>) (.*)')
   VAR = "_xmp_#{Time.new.to_i}_#{Process.pid}_#{rand(1000000)}"
