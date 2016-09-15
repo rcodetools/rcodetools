@@ -1,6 +1,13 @@
 
 PKG_REVISION = ".0"
 
+require 'simplecov'
+SimpleCov.start
+task :coverage do
+  SimpleCov.command_name 'Unit Tests'
+  Rake::Task[:test].execute
+end
+
 $:.unshift "lib" if File.directory? "lib"
 require 'rcodetools/xmpfilter'
 require 'rake/testtask'
@@ -9,23 +16,7 @@ RCT_VERSION  = XMPFilter::VERSION
 
 desc "Run the unit tests in pure-Ruby mode ."
 Rake::TestTask.new(:test) do |t|
-  t.libs << "ext/rcovrt"
   t.test_files = FileList['test/test*.rb']
-  t.verbose = true
-end
-
-require 'rcov/rcovtask'
-desc "Run rcov."
-Rcov::RcovTask.new do |t|
-  t.rcov_opts << "--xrefs"  # comment to disable cross-references
-  t.test_files = FileList['test/test_*.rb'].to_a - ["test/test_functional.rb"]
-  t.verbose = true
-end
-
-desc "Save current coverage state for later comparisons."
-Rcov::RcovTask.new(:rcovsave) do |t|
-  t.rcov_opts << "--save"
-  t.test_files = FileList['test/test_*.rb'].to_a - ["test/test_functional.rb"]
   t.verbose = true
 end
 
