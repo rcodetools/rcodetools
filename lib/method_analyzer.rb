@@ -44,7 +44,7 @@ module MethodAnalyzer
       file.replace @@expand_path[file]
       if event == 'call'
         @@whereis << [file, line, fullname] if file !~ /\(eval\)$/
-        file, line, rest = caller(4)[0].split(/:/)
+        file, line, rest = caller(5)[0].split(/:/)
         file.replace @@expand_path[file] # DRY
         p caller(0) if $DEBUG
         line = line.to_i
