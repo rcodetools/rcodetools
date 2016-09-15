@@ -26,11 +26,15 @@ task :install do
   sh "sudo ruby setup.rb install"
 end
 
-desc "release in rubyforge"
-task :release do
+desc "make package"
+task :package do
   Dir.mkdir('pkg') unless FileTest.exist?('pkg')
   sh "gem build rcodetools"
   sh "mv rcodetools-#{RCT_VERSION}.gem pkg"
+end
+
+desc "release in RubyGems.org"
+task :release => :package do
   sh "gem push pkg/rcodetools-#{RCT_VERSION}.gem"
 end
 
