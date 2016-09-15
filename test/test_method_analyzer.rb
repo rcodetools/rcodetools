@@ -74,7 +74,7 @@ class MethodAnalyzerMarshalOutput < Test::Unit::TestCase
     open(file, "w"){ |f| f.write(str) }
   end
 
-  def test_marshal_merged
+  def test_marshal_merged_fixnum_plus
     begin
       ENV['METHOD_ANALYZER_FORMAT'] = 'marshal'
       @pwd = Dir.pwd
@@ -89,7 +89,7 @@ class MethodAnalyzerMarshalOutput < Test::Unit::TestCase
     end
   end
 
-  def test_marshal_merged
+  def test_marshal_merged_array_empty
     begin
       ENV['METHOD_ANALYZER_FORMAT'] = 'marshal'
       @pwd = Dir.pwd
