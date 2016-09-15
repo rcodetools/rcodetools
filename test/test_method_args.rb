@@ -8,7 +8,7 @@ end
 class TestMethodArgs < Test::Unit::TestCase
   # (find-sh "cd ..; method_args.rb -n test/method_args.data.rb")
   include MethodArgsScriptConfig
-  @@result = `ruby '#{SCRIPT}' -n '#{DATAFILE}'`.split(/\n/)
+  @@result = `ruby -Ilib '#{SCRIPT}' -n '#{DATAFILE}'`.split(/\n/)
   @@result.delete_if{ |line| line =~ /Digest/ and line !~ /method_in_Digest_Base/ }
   @@result.delete "zzzz OK"
 
