@@ -27,10 +27,11 @@ task :install do
 end
 
 desc "release in rubyforge"
-task :release => [:package] do 
-  sh "rubyforge login"
-  sh "rubyforge add_release rcodetools rcodetools #{RCT_VERSION} pkg/rcodetools-#{RCT_VERSION}.0.tar.gz "
-  sh "rubyforge add_file rcodetools rcodetools #{RCT_VERSION} pkg/rcodetools-#{RCT_VERSION}.0.gem "
+task :release do
+  Dir.mkdir('pkg') unless FileTest.exist?('pkg')
+  sh "gem build rcodetools"
+  sh "mv rcodetools-#{RCT_VERSION}.gem pkg"
+  sh "gem push pkg/rcodetools-#{RCT_VERSION}.gem"
 end
 
 # vim: set sw=2 ft=ruby:
