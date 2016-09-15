@@ -1,15 +1,21 @@
+# rcodetools
 
- rcodetools  http://eigenclass.org/hiki.rb?rcodetools
- Copyright (c) 2005-2007 Mauricio Fernandez <mfp@acm.org> http://eigenclass.org
- Copyright (c) 2006-2008 rubikitch <rubikitch@ruby-lang.org> http://www.rubyist.net/~rubikitch/
+rcodetools  http://eigenclass.org/hiki.rb?rcodetools
+
+Copyright (c) 2005-2007 Mauricio Fernandez <mfp@acm.org> http://eigenclass.org
+
+Copyright (c) 2006-2008 rubikitch <rubikitch@ruby-lang.org> http://www.rubyist.net/~rubikitch/
+
 Use and distribution subject to the terms of the Ruby license.
 
-= Overview
+## Overview
+
 rcodetools is a collection of Ruby code manipulation tools. 
 It includes xmpfilter and editor-independent Ruby development helper tools,
 as well as emacs and vim interfaces.
 
 Currently, rcodetools comprises:
+
 * xmpfilter: Automagic Test::Unit assertions/RSpec expectations and code annotations
 * rct-complete: Accurate method/class/constant etc. completions
 * rct-doc: Document browsing and code navigator
@@ -26,20 +32,26 @@ Actually they use xmpfilter's code heavily.
 But the relationship between xmpfilter (annotation) and completion/doc is not
 intuitive, so I (rubikitch) split it into separate executables.
 
-= Usage
+## Usage
+
 xmpfilter, rct-complete and rct-doc take its input from stdin and write to
 stdout. They can run in several modes; see 
- xmpfilter -h 
- rct-complete -h 
- rct-doc -h 
- rct-meth-args -h
- rct-fork -h
- rct-fork-client -h
- ruby-toggle-file -h
- rbtest -h
+
+```
+xmpfilter -h 
+rct-complete -h 
+rct-doc -h 
+rct-meth-args -h
+rct-fork -h
+rct-fork-client -h
+ruby-toggle-file -h
+rbtest -h
+```
+
 README.emacs and README.vim describe how to use rcodetools from your editor.
 
-= Accurate Completion Internal and Caveat
+## Accurate Completion Internal and Caveat
+
 rct-complete and rct-doc use xmpfilter engine, ie they get runtime information by executing code.
 In Ruby (dynamic languages), type of any expressions except literals cannot be known without actually executing code.
 Moreover Ruby has open classes and singleton methods.
@@ -49,26 +61,31 @@ they both need the object value in question.
 Therefore we discuss completion.
 
 rct-complete does:
-(1) replaces target line with completion magic
-    (it calculates methods the target object has).
-(2) executes modified script.
-(3) once the control reaches completion magic, modified script exits.
-(4) outputs in specified format. (list candidates, EmacsLisp...)
+1. replaces target line with completion magic (it calculates methods the target object has).
+2. executes modified script.
+3. once the control reaches completion magic, modified script exits.
+4. outputs in specified format. (list candidates, EmacsLisp...)
 
 But this methodology has two big drawbacks, side-effects and inability to get any informations of uncovered code!
 
 An extreme side-effect example:
-  File.unlink a_file
-  File. <-
+
+```ruby
+File.unlink a_file
+File. <-
+```
 
 If you call rct-complete, it removes a_file (sends a mail, accesses DB ...).
 So you must be careful to use, especially at TOPLEVEL.
 I (rubikitch) often experiment at TOPLEVEL with rcodetools, I NEVER use irb(sh) since rcodetools!
 
 An uncovered code example:
-  def foo
-    1. <-
-  end
+
+```ruby
+def foo
+  1. <-
+end
+```
 
 If the code does not call foo, we cannot do any completions.
 
@@ -94,5 +111,6 @@ Enjoy TDC magic!
 See also README.TDC.
 
 
-= License
+## License
+
 rcodetools is licensed under the same terms as Ruby.
