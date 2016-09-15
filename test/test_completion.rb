@@ -388,7 +388,7 @@ EOC
     assert_equal(["uniq", "uniq!"], doit('Array.new(3).to_a.uni',1))
     assert_equal(["uniq", "uniq!"], doit('Array.new(3).map{|x| x.to_i}.uni',1))
     assert_equal(["uniq", "uniq!"], doit('[][0,(1+1)].uni',1))
- end
+  end
 
   def test_percent__String
     assert_equal(["length"], doit('%!foo!.leng',1))
