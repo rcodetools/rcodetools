@@ -9,10 +9,9 @@ task :coverage do
 end
 
 $:.unshift "lib" if File.directory? "lib"
-require 'rcodetools/xmpfilter'
+require 'rcodetools'
 require 'rake/testtask'
-include Rcodetools
-RCT_VERSION  = XMPFilter::VERSION
+RCT_VERSION  = Rcodetools::VERSION
 
 desc "Run the unit tests in pure-Ruby mode ."
 Rake::TestTask.new(:test) do |t|
