@@ -1,5 +1,7 @@
 # rcodetools
 
+[![Build Status](https://travis-ci.org/rcodetools/rcodetools.svg?branch=master)](https://travis-ci.org/rcodetools/rcodetools)
+
 rcodetools  http://eigenclass.org/hiki.rb?rcodetools
 
 Copyright (c) 2005-2007 Mauricio Fernandez <mfp@acm.org> http://eigenclass.org
