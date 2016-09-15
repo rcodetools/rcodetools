@@ -28,10 +28,6 @@ class XMPFilter
                      :include_paths => [], :warnings => true, 
                      :use_parentheses => true}
 
-  def windows?
-    /win|mingw/ =~ RUBY_PLATFORM && /darwin/ !~ RUBY_PLATFORM
-  end
-
   Interpreter = Struct.new(:options, :execute_method, :accept_debug, :accept_include_paths, :chdir_proc)
   INTERPRETER_RUBY = Interpreter.new(["-w"],
     :execute_ruby, true, true, nil)
@@ -208,7 +204,7 @@ end || #{v}
   private :safe_require_code
 
   def execute_ruby(code)
-    meth = (windows? or @execute_ruby_tmpfile) ? :execute_tmpfile : :execute_popen
+    meth = @execute_ruby_tmpfile ? :execute_tmpfile : :execute_popen
     __send__ meth, code
   end
 
