@@ -47,7 +47,7 @@ def setup
 end
 
 def unindent(s)
-  s.map{|x| x[1..-1]}.join
+  s.lines.map{|x| x[1..-1]}.join
 end
 =end
 
@@ -114,7 +114,7 @@ assert_equal unindent(test_script), script_to_test_script(unindent(script), "f.r
 def script_to_test_script(ruby_source, script_filename)
   _SKIP = "\n"
   state = :start
-  ruby_source.map do |line|
+  ruby_source.lines.map do |line|
     case line
     when /^#!/
       line
