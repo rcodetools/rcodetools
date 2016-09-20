@@ -7,3 +7,6 @@ Array.new(3).sl
 ==========
 slice	Array#slice
 slice!	Array#slice!
+slice_after	Enumerable#slice_after
+slice_before	Enumerable#slice_before
+slice_when	Enumerable#slice_when
