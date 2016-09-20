@@ -207,7 +207,7 @@ end || #{v}
     __send__ meth, code
   end
 
-  def split_shbang(script)
+  def split_shebang(script)
     ary = script.each_line.to_a
     if ary[0] =~ /^#!/ and ary[1] =~ /^#.*coding/
       [ary[0..1], ary[2..-1]]
@@ -217,7 +217,7 @@ end || #{v}
       [[], ary]
     end
   end
-  private :split_shbang
+  private :split_shebang
 
   def execute_tmpfile(code)
     ios = %w[_ stdin stdout stderr]
@@ -231,11 +231,9 @@ end || #{v}
       at_exit { f.close unless f.closed?; File.unlink fname unless $DEBUG}
       f
     end
-    #stdin.puts code
-    #stdin.close
-    shbang_magic_comment, rest = split_shbang(code)
+    shebang_magic_comment, rest = split_shebang(code)
     @stdin_path = File.expand_path stdin.path
-    stdin.print shbang_magic_comment
+    stdin.print shebang_magic_comment
     stdin.print <<-EOF.map{|l| l.strip}.join(";")
       $stdout.reopen('#{File.expand_path(stdout.path)}', 'w')
       $stderr.reopen('#{File.expand_path(stderr.path)}', 'w')

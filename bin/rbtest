@@ -166,7 +166,12 @@ assert_equal "ruby18 #{test_script_filename} ", execute_test_script_command(test
 
 =end
 
+def windows?
+  /win|mingw/ =~ RUBY_PLATFORM && /darwin/ !~ RUBY_PLATFORM
+end
+
 def shebang(filename)
+  return nil if windows?
   open(filename) {|f| line = f.gets.chomp; line[0,2] == "#!" and line[2..-1] }
 end
 
