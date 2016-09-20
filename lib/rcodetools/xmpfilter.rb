@@ -34,7 +34,7 @@ class XMPFilter
   INTERPRETER_FORK = Interpreter.new(["-S", "rct-fork-client"],
     :execute_tmpfile, false, true,
     lambda { Fork::chdir_fork_directory })
-                                     
+
   def self.detect_rbtest(code, opts)
     opts[:use_rbtest] ||= (opts[:detect_rbtest] and code =~ /^=begin test./) ? true : false
   end
@@ -64,7 +64,7 @@ class XMPFilter
     @postfix = ""
     @stdin_path = nil
     @width = options[:width]
-    
+
     initialize_rct_fork if options[:detect_rct_fork]
     initialize_rbtest if options[:use_rbtest]
     initialize_for_test_script test_script, test_method, filename if test_script and !options[:use_rbtest]
@@ -127,40 +127,41 @@ class XMPFilter
     newcode = code.gsub(SINGLE_LINE_RE){ prepare_line($1, idx += 1) }
     newcode.gsub!(MULTI_LINE_RE){ prepare_line($1, idx += 1, true)}
     File.open(@dump, "w"){|f| f.puts newcode} if @dump
-    stdout, stderr = execute(newcode)
-    output = stderr.readlines
-    runtime_data = extract_data(output)
-    idx = 0
-    annotated = code.gsub(SINGLE_LINE_RE) { |l|
-      expr = $1
-      if /^\s*#/ =~ l
-        l 
-      else
-        annotated_line(l, expr, runtime_data, idx += 1)
+    execute(newcode) do |stdout, stderr|
+      output = stderr.readlines
+      runtime_data = extract_data(output)
+      idx = 0
+      annotated = code.gsub(SINGLE_LINE_RE) { |l|
+        expr = $1
+        if /^\s*#/ =~ l
+          l
+        else
+          annotated_line(l, expr, runtime_data, idx += 1)
+        end
+      }
+      annotated.gsub!(/ # !>.*/, '')
+      annotated.gsub!(/# (>>|~>)[^\n]*\n/m, "");
+      annotated.gsub!(MULTI_LINE_RE) { |l|
+        annotated_multi_line(l, $1, $3, runtime_data, idx += 1)
+      }
+      ret = final_decoration(annotated, output)
+      if @output_stdout and (s = stdout.read) != ""
+        ret << s.inject(""){|s,line| s + "# >> #{line}".chomp + "\n" }
       end
-    }
-    annotated.gsub!(/ # !>.*/, '')
-    annotated.gsub!(/# (>>|~>)[^\n]*\n/m, "");
-    annotated.gsub!(MULTI_LINE_RE) { |l|
-      annotated_multi_line(l, $1, $3, runtime_data, idx += 1)
-    }
-    ret = final_decoration(annotated, output)
-    if @output_stdout and (s = stdout.read) != ""
-      ret << s.inject(""){|s,line| s + "# >> #{line}".chomp + "\n" }
+      ret
     end
-    ret
   end
 
   def annotated_line(line, expression, runtime_data, idx)
     "#{expression} # => " + (runtime_data.results[idx].map{|x| x[1]} || []).join(", ")
   end
-  
+
   def annotated_multi_line(line, expression, indent, runtime_data, idx)
     pretty = (runtime_data.results[idx].map{|x| x[1]} || []).join(", ")
     first, *rest = pretty.to_a
     rest.inject("#{expression}\n#{indent}# => #{first || "\n"}") {|s, l| s << "#{indent}#    " << l }
   end
-  
+
   def prepare_line_annotation(expr, idx, multi_line=false)
     v = "#{VAR}"
     blocal = "__#{VAR}"
@@ -206,6 +207,18 @@ end || #{v}
     __send__ meth, code
   end
 
+  def split_shbang(script)
+    ary = script.each_line.to_a
+    if ary[0] =~ /^#!/ and ary[1] =~ /^#.*coding/
+      [ary[0..1], ary[2..-1]]
+    elsif ary[0] =~ /^#!|^#.*coding/
+      [[ary[0]], ary[1..-1]]
+    else
+      [[], ary]
+    end
+  end
+  private :split_shbang
+
   def execute_tmpfile(code)
     ios = %w[_ stdin stdout stderr]
     stdin, stdout, stderr = (1..3).map do |i|
@@ -218,22 +231,28 @@ end || #{v}
       at_exit { f.close unless f.closed?; File.unlink fname unless $DEBUG}
       f
     end
-    stdin.puts code
-    stdin.close
+    #stdin.puts code
+    #stdin.close
+    shbang_magic_comment, rest = split_shbang(code)
     @stdin_path = File.expand_path stdin.path
-    exe_line = <<-EOF.map{|l| l.strip}.join(";")
+    stdin.print shbang_magic_comment
+    stdin.print <<-EOF.map{|l| l.strip}.join(";")
       $stdout.reopen('#{File.expand_path(stdout.path)}', 'w')
       $stderr.reopen('#{File.expand_path(stderr.path)}', 'w')
       $0 = '#{File.expand_path(stdin.path)}'
       ARGV.replace(#{@options.inspect})
       load #{File.expand_path(stdin.path).inspect}
-      #{@evals.join(";")}
+      END { #{@evals.join(";")} }
     EOF
-    debugprint "execute command = #{(interpreter_command << "-e" << exe_line).join ' '}"
+
+    stdin.print ";#{rest}"
+
+    debugprint "execute command = #{(interpreter_command << stdin.path).join ' '}"
+    stdin.close
 
     oldpwd = Dir.pwd
     @interpreter_info.chdir_proc and @interpreter_info.chdir_proc.call
-    system(*(interpreter_command << "-e" << exe_line))
+    system(*(interpreter_command << stdin.path))
     Dir.chdir oldpwd
     [stdout, stderr]
   end
@@ -258,23 +277,31 @@ end || #{v}
     args = *(interpreter_command << %["#{path}"] << "2>" << 
       %["#{stderr_path}"] << ">" << %["#{stdout_path}"])
     system(args.join(" "))
-    
+
     [stdout_path, stderr_path].map do |fullname|
-      f = File.open(fullname, "r")
-      at_exit {
-        f.close unless f.closed?
-        File.unlink fullname if File.exist? fullname
-      }
-      f
+      File.open(fullname, "r")
     end
   end
 
   def execute(code)
-    __send__ @interpreter_info.execute_method, code
+    stdout, stderr = __send__ @interpreter_info.execute_method, code
+    if block_given?
+      begin
+        yield stdout, stderr
+      ensure
+        for out in [stdout, stderr]
+          path = out.path rescue nil
+          out.close
+        end
+      end
+    else
+      [stdout, stderr]
+    end
   end
 
   def interpreter_command
-    r = [ @interpreter ] + @interpreter_info.options
+    #r = [ @interpreter ] + @interpreter_info.options
+    r = @interpreter.split + @interpreter_info.options
     r << "-d" if $DEBUG and @interpreter_info.accept_debug
     r << "-I#{@include_paths.join(":")}" if @interpreter_info.accept_include_paths and !@include_paths.empty?
     @libs.each{|x| r << "-r#{x}" } unless @libs.empty?
