@@ -31,7 +31,7 @@ class TestFunctional < Test::Unit::TestCase
       end
     end
   end
-  
+
   # TODO
   Dir["#{DIR}/data/rct-complete-TDC/*.taf"].each do |taf|
     desc, cmdline, input, output, test = parse_taf(taf)
