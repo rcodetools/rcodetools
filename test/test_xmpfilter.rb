@@ -77,12 +77,11 @@ class TestXMPFilter < Test::Unit::TestCase
                          :test_method=>"test_implementation_file_file_exist",
                          :filename=>"/path/to/lib/ruby_toggle_file.rb")
 
-    evals_expected = [
-      %q!$LOADED_FEATURES << "ruby_toggle_file.rb"!,
-      %q!require 'test/unit'!,
-      %q!load "/path/to/test/test_ruby_toggle_file.rb"!,
-      %q!Test::Unit::AutoRunner.run(false, nil, ["-n", "test_implementation_file_file_exist"])!
-    ]
+    evals_expected = []
+    evals_expected << %Q!$LOADED_FEATURES << "ruby_toggle_file.rb"!
+    evals_expected << %Q!require 'test/unit'!
+    evals_expected << %Q!load "#{File.expand_path("/path/to/test/test_ruby_toggle_file.rb")}"!
+    evals_expected << %Q!Test::Unit::AutoRunner.run(false, nil, ["-n", "test_implementation_file_file_exist"])!
     assert_equal evals_expected, xmp.instance_variable_get(:@evals)
   end
 
@@ -92,12 +91,11 @@ class TestXMPFilter < Test::Unit::TestCase
                          :test_method=>"test_implementation_file_file_exist",
                          :filename=>"/path/to/ruby_toggle_file.rb")
 
-    evals_expected = [
-      %q!$LOADED_FEATURES << "ruby_toggle_file.rb"!,
-      %q!require 'test/unit'!,
-      %q!load "/path/to/test_ruby_toggle_file.rb"!,
-      %q!Test::Unit::AutoRunner.run(false, nil, ["-n", "test_implementation_file_file_exist"])!
-    ]
+    evals_expected = []
+    evals_expected << %Q!$LOADED_FEATURES << "ruby_toggle_file.rb"!
+    evals_expected << %Q!require 'test/unit'!
+    evals_expected << %Q!load "#{File.expand_path("/path/to/test_ruby_toggle_file.rb")}"!
+    evals_expected << %Q!Test::Unit::AutoRunner.run(false, nil, ["-n", "test_implementation_file_file_exist"])!
     assert_equal evals_expected, xmp.instance_variable_get(:@evals)
   end
 
