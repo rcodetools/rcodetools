@@ -377,6 +377,7 @@ EOC
   end
 
   def test_percent__Regexp
+    skip if RUBY_VERSION.to_f > 1.8
     assert_equal("Regexp#kcode", doit('%r!foo!.kcode',1))
     assert_equal("Regexp#kcode", doit('%r{foo}.kcode',1))
     assert_equal("Regexp#kcode", doit('%r!(!.kcode',1))
