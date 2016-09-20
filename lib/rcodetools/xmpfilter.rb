@@ -81,8 +81,8 @@ class XMPFilter
   end
 
   def initialize_for_test_script(test_script, test_method, filename)
-    test_script.replace File.expand_path(test_script) if File.exists? test_script
-    filename.replace File.expand_path(filename) if File.exists? filename
+    test_script.replace File.expand_path(test_script) if File.exist? test_script
+    filename.replace File.expand_path(filename) if File.exist? filename
     unless test_script == filename
       basedir = common_path(test_script, filename)
       relative_filename = filename[basedir.length+1 .. -1].sub(%r!^lib/!, '')
