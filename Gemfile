@@ -9,4 +9,5 @@ group :test do
   gem 'test-unit'
   gem 'simplecov'
   gem 'mocha'
+  gem 'exceptions'
 end
