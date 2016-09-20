@@ -68,7 +68,8 @@ class TestXMPFilter < Test::Unit::TestCase
 
   def test_interpreter_command_use_rbtest
     xmp = XMPFilter.new(:interpreter=>"ruby", :use_rbtest => true)
-    assert_equal(%w[ruby -S rbtest], xmp.interpreter_command)
+    assert_equal(%w[ruby -S], xmp.interpreter_command[0,2])
+    assert_true(xmp.interpreter_command[2].end_with? 'rbtest')
   end
 
   def test_initialize__test_script_1
