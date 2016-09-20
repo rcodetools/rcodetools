@@ -29,9 +29,9 @@ class XMPFilter
   Interpreter = Struct.new(:options, :execute_method, :accept_debug, :accept_include_paths, :chdir_proc)
   INTERPRETER_RUBY = Interpreter.new(["-w"],
     :execute_ruby, true, true, nil)
-  INTERPRETER_RBTEST = Interpreter.new(["-S", "rbtest"],
+  INTERPRETER_RBTEST = Interpreter.new(["-S", File.join(File.dirname($0), "rbtest")],
     :execute_script, false, false, nil)
-  INTERPRETER_FORK = Interpreter.new(["-S", "rct-fork-client"],
+  INTERPRETER_FORK = Interpreter.new(["-S", File.join(File.dirname($0), "rct-fork-client")],
     :execute_tmpfile, false, true,
     lambda { Fork::chdir_fork_directory })
 
