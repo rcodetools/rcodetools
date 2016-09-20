@@ -277,7 +277,7 @@ end || #{v}
     system(args.join(" "))
 
     [stdout_path, stderr_path].map do |fullname|
-      File.open(fullname, "r").read
+      File.open(fullname, "r")
     end
   end
 
