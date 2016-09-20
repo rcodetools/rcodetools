@@ -63,7 +63,8 @@ class TestXMPFilter < Test::Unit::TestCase
   def test_interpreter_command_detect_rct_fork
     Fork.stubs(:run?).returns true
     xmp = XMPFilter.new(:interpreter=>"ruby", :detect_rct_fork => true)
-    assert_equal(%w[ruby -S rct-fork-client], xmp.interpreter_command)
+    assert_equal(%w[ruby -S], xmp.interpreter_command[0,2])
+    assert_true(xmp.interpreter_command[2].end_with? 'rct-fork-client')
   end
 
   def test_interpreter_command_use_rbtest
