@@ -23,7 +23,7 @@ opts = OptionParser.new do |opts|
   opts.on("-s", "--spec", "Complete RSpec expectations.") do
     require 'rcodetools/xmptestunitfilter'
     klass = XMPRSpecFilter
-    options[:interpreter] = "spec"
+    options[:interpreter] = "rspec"
   end
   opts.on("--expectations", "Complete expectations expectations.") do
     require 'rcodetools/xmptestunitfilter'
