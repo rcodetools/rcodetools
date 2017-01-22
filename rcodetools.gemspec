@@ -31,8 +31,8 @@ EOF
   spec.require_paths = ["lib"]
 
   spec.has_rdoc = true
-  spec.extra_rdoc_files = %w[README]
-  spec.rdoc_options << "--main" << "README" << "--title" << 'rcodetools'
+  spec.extra_rdoc_files = %w[README.md]
+  spec.rdoc_options << "--main" << "README.md" << "--title" << 'rcodetools'
   spec.test_files = Dir["test/test_*.rb"]
   spec.post_install_message = <<EOF
 
