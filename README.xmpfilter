@@ -29,8 +29,8 @@ Just add "# =>" markers to the lines whose values you want to be shown:
  a + b                                             # =>
  a.size                                            # =>
 
-will be expanded to (in one keypress in a decent editor, see README.emacs and
-README.vim)
+will be expanded to (in one keypress in a decent editor, see misc/README.emacs and
+misc/README.vim)
 
  a, b = "foo", "baz"
  a + b                                             # => "foobaz"
@@ -50,8 +50,8 @@ a = ["1111111111111111111111111111111111111111111111111111", 123334324234242342,
 a
 # => 
 
-will be expanded to (in one keypress in a decent editor, see README.emacs and
-README.vim)
+will be expanded to (in one keypress in a decent editor, see misc/README.emacs and
+misc/README.vim)
 
 a = ["1111111111111111111111111111111111111111111111111111", 123334324234242342,
   1332333333,6,8 ]
